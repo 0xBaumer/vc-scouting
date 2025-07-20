@@ -5,10 +5,11 @@
   "main": "vc-portfolio-scraper.ts",
   "type": "module",
   "scripts": {
-    "start": "bun run telegram_bot.js",
+    "start": "bun run railway-start.js",
     "scraper": "bun run vc-portfolio-scraper.ts",
     "bot": "bun run telegram_bot.js",
     "dev": "bun --watch telegram_bot.js",
+    "railway": "bun run railway-start.js",
     "test": "bun test"
   },
   "keywords": [
