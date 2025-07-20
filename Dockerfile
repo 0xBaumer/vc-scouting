@@ -13,9 +13,7 @@ RUN bun install --frozen-lockfile
 # Copier le reste des fichiers
 COPY . .
 
-# Installer Playwright browsers
-RUN bun install playwright
-RUN bunx playwright install chromium
+# Pas de Playwright nécessaire pour sites statiques
 
 # Exposer le port (Railway l'assigne automatiquement)
 EXPOSE $PORT

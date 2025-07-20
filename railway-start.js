@@ -12,7 +12,7 @@ console.log('⏰ Running every 12 hours (same as your local cron)');
 function runScraper() {
   console.log(`\n📅 [${new Date().toLocaleString()}] Starting VC scraping...`);
   
-  const scraper = spawn('bun', ['run', 'vc-portfolio-scraper.ts'], {
+  const scraper = spawn('bun', ['run', 'vc-portfolio-scraper-railway.ts'], {
     stdio: 'inherit'
   });
   
