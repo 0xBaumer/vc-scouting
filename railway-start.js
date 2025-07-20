@@ -6,7 +6,7 @@
 import { spawn } from 'child_process';
 
 console.log('🚀 Railway VC Scraper started...');
-console.log('⏰ Running every 12 hours (same as your local cron)');
+console.log('⏰ Running every 2 hours for better coverage');
 
 // Fonction pour exécuter le scraper
 function runScraper() {
@@ -23,8 +23,8 @@ function runScraper() {
       console.error(`❌ Scraping failed with code ${code}`);
     }
     
-    // Programmer la prochaine exécution dans 12 heures
-    console.log('⏱️ Next scraping in 12 hours...\n');
+    // Programmer la prochaine exécution dans 2 heures
+    console.log('⏱️ Next scraping in 2 hours...\n');
   });
   
   scraper.on('error', (error) => {
@@ -35,8 +35,8 @@ function runScraper() {
 // Première exécution immédiate
 runScraper();
 
-// Puis toutes les 12 heures (comme votre configuration locale)
-setInterval(runScraper, 12 * 60 * 60 * 1000); // 12 heures en millisecondes
+// Puis toutes les 2 heures pour une couverture optimale
+setInterval(runScraper, 2 * 60 * 60 * 1000); // 2 heures en millisecondes
 
 // Garder le processus en vie
 process.on('SIGTERM', () => {
