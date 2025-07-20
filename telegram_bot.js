@@ -11,13 +11,12 @@ dotenv.config();
 const execAsync = promisify(exec);
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
 
 // Bot ouvert à tous les utilisateurs
 
-if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
-  console.error('❌ TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID environment variables are required');
+if (!TELEGRAM_BOT_TOKEN) {
+  console.error('❌ TELEGRAM_BOT_TOKEN environment variable is required');
   process.exit(1);
 }
 
@@ -58,8 +57,8 @@ async function runScheduledScraping() {
         const newProjects = lines.filter(line => line.includes('+ ') || line.includes('new projects:'));
         
         if (newProjects.length > 0) {
-          const projectsList = newProjects.slice(0, 10).join('\n');
-          await sendMessage(`🚀 *Scheduled Scraping Results*\n\n📈 *New projects found:*\n${projectsList}`);
+          console.log(`Scheduled scraping found ${newProjects.length} new projects`);
+          // Note: Scheduled scraping doesn't send messages since no chatId available
         } else {
           console.log('No new projects found in scheduled scraping');
         }
@@ -84,7 +83,7 @@ function startScheduledScraping() {
   console.log('🔄 Scheduled scraping started (every 2 hours)');
 }
 
-async function sendMessage(text, chatId = TELEGRAM_CHAT_ID) {
+async function sendMessage(text, chatId) {
   try {
     await axios.post(`${TELEGRAM_API_URL}/sendMessage`, {
       chat_id: chatId,
@@ -98,13 +97,13 @@ async function sendMessage(text, chatId = TELEGRAM_CHAT_ID) {
 
 async function runSourceLoop(chatId, messageId) {
   if (isRunning) {
-    await sendMessage('🔄 Scraper is already running...', chatId);
+    await sendMessage('🔄 LEGENDARY Scraper is already running...', chatId);
     return;
   }
 
   isRunning = true;
   scrapingStartTime = new Date();
-  await sendMessage('🚀 Starting VC portfolio scraper...', chatId);
+  await sendMessage('🚀 Starting LEGENDARY VC portfolio scraper...', chatId);
   
   // Lancer le scraper de manière complètement détachée
   const { spawn } = await import('child_process');
@@ -134,12 +133,12 @@ async function runSourceLoop(chatId, messageId) {
       
       if (newProjects.length > 0) {
         const projectsList = newProjects.slice(0, 10).join('\n');
-        await sendMessage(`✅ *Scraping completed!*\n\n📈 *New projects found:*\n${projectsList}\n\n📊 ${stats || 'Scraping finished successfully'}`, chatId);
+        await sendMessage(`✅ *LEGENDARY Scraping completed!*\n\n📈 *New projects found:*\n${projectsList}\n\n📊 ${stats || 'Scraping finished successfully'}`, chatId);
       } else {
-        await sendMessage(`✅ *Scraping completed!*\n\n📊 No new projects found this time.\n\n${stats || 'All sites checked successfully'}`, chatId);
+        await sendMessage(`✅ *LEGENDARY Scraping completed!*\n\n📊 No new projects found this time.\n\n${stats || 'All sites checked successfully'}`, chatId);
       }
     } else {
-      await sendMessage(`❌ *Scraper failed with exit code ${code}*`, chatId);
+      await sendMessage(`❌ *LEGENDARY Scraper failed with exit code ${code}*`, chatId);
     }
   });
   
@@ -148,7 +147,7 @@ async function runSourceLoop(chatId, messageId) {
     isRunning = false;
     scrapingStartTime = null;
     console.error('Error running scraper:', error);
-    await sendMessage(`❌ *Error running scraper:*\n\`${error.message}\``, chatId);
+    await sendMessage(`❌ *Error running LEGENDARY scraper:*\n\`${error.message}\``, chatId);
   });
   
   // Retourner immédiatement sans attendre
@@ -182,25 +181,26 @@ async function processTelegramUpdates() {
       const command = message.text.toLowerCase().trim();
       
       switch (command) {
-        case '/source':
-        case '/start_scraping':
-          await runSourceLoop(message.chat.id, message.message_id);
-          break;
-        case '/status':
-          if (isRunning) {
-            await sendMessage(`🔄 *Scraper is currently running*\n\n⏱️ Started at: ${scrapingStartTime ? scrapingStartTime.toLocaleTimeString() : 'Unknown'}\n🔧 Status: Processing VC portfolios...\n\n💡 _The scraper usually takes 2-5 minutes to complete._`, chatId);
-          } else {
-            await sendMessage(`⏸️ *Scraper is idle*\n\n🎯 Use /source to start manual scraping\n⏰ Automatic scraping every 2 hours`, chatId);
-          }
+        case '/start':
+          await sendMessage(`🔥 *VC Portfolio Scraper Bot - LEGENDARY*\n\nBienvenue ! Ce bot scrape les portfolios de VCs sur Railway avec scraping automatique toutes les 2h.\n\nUtilise /help pour voir les commandes disponibles.`, chatId);
           break;
         case '/help':
-        case '/start':
-          await sendMessage(`🤖 *VC Portfolio Scraper Bot*\n\nCommands:\n/source - Start scraping VC portfolios\n/status - Check bot status\n/help - Show this help message`, chatId);
+          await sendMessage(`🔥 *VC Portfolio Scraper Bot - LEGENDARY*\n\nCommandes disponibles:\n\n/start - Message de bienvenue\n/help - Afficher cette aide\n/legendary_source - Lancer le scraping LEGENDARY\n/legendary_status - Vérifier le statut du bot LEGENDARY\n\n⏰ Scraping automatique toutes les 2 heures`, chatId);
+          break;
+        case '/legendary_source':
+        case '/legendarysource':
+          await runSourceLoop(message.chat.id, message.message_id);
+          break;
+        case '/legendary_status':
+        case '/legendarystatus':
+          if (isRunning) {
+            await sendMessage(`🔄 *Scraper LEGENDARY en cours d'exécution*\n\n⏱️ Démarré à: ${scrapingStartTime ? scrapingStartTime.toLocaleTimeString() : 'Inconnu'}\n🔧 Statut: Traitement des portfolios VC...\n\n💡 _Le scraper prend généralement 2-5 minutes à compléter._`, chatId);
+          } else {
+            await sendMessage(`⏸️ *Scraper LEGENDARY inactif*\n\n🎯 Utilise /legendary_source pour démarrer le scraping manuel\n⏰ Scraping automatique toutes les 2 heures`, chatId);
+          }
           break;
         default:
-          if (message.text.startsWith('/')) {
-            await sendMessage('❓ Unknown command. Use /help to see available commands.', chatId);
-          }
+          // Ignore unknown commands
           break;
       }
     }

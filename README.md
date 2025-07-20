@@ -1,78 +1,48 @@
-# 🚀 VC Portfolio Scraper
+# LegendaryBot - VC Portfolio Scraper (Railway)
 
-Scraper automatique des portfolios des fonds de Venture Capital avec notifications Telegram.
+Ce dossier contient tous les fichiers nécessaires pour le bot Telegram LEGENDARY qui tourne sur Railway et scrape automatiquement les portfolios de VCs.
 
-## 📊 Fonctionnalités
+## Fichiers inclus
 
-- **21 sites VC scrapés** automatiquement
-- **853+ projets** surveillés en continu
-- **Notifications Telegram** en temps réel
-- **GitHub Actions** pour automatisation (tous les jours à 11h Paris)
-- **Détection intelligente** des nouveaux deals
+- `telegram_bot.js` - Le bot Telegram LEGENDARY (pour Railway)
+- `vc-portfolio-scraper.ts` - Le scraper de portfolios VC
+- `.env` - Variables d'environnement
+- `package.json` - Dépendances du projet
 
-## 🎯 Sites surveillés
+## Commandes disponibles
 
-### Sites statiques :
-- Haun Ventures, HashKey Capital, Greenfield, Fabric VC
-- Dewhales, MH Ventures, Multicoin Capital, Wintermute
-- Alliance DAO, GM Capital, Shima Capital, etc.
+- `/start` - Message de bienvenue
+- `/help` - Afficher l'aide
+- `/legendary_source` - Lancer le scraping LEGENDARY
+- `/legendary_status` - Vérifier le statut du bot LEGENDARY
 
-### Sites dynamiques :
-- Framework Ventures, Delphi Digital, Pantera Capital
-- Paradigm, Sequoia Capital, a16z Crypto
-- 6thMan Ventures, Bankless Ventures, etc.
+## Fonctionnalités
 
-## ⚙️ Configuration
+- ✅ Scraping automatique toutes les 2 heures
+- ✅ Scraping manuel à la demande
+- ✅ Notifications Telegram des nouveaux projets trouvés
+- ✅ Support de deux méthodes de scraping : statique (Axios + Cheerio) et dynamique (Playwright)
 
-### Variables d'environnement requises :
-```
-TELEGRAM_BOT_TOKEN=votre_token_bot
-TELEGRAM_CHAT_ID=votre_chat_id
-```
+## Déploiement sur Railway
 
-### Installation locale :
+1. Créer un nouveau projet Railway
+2. Connecter ce repository
+3. Définir les variables d'environnement :
+   - `TELEGRAM_BOT_TOKEN` - Token du bot Telegram
+   - `TELEGRAM_CHAT_ID` - ID du chat pour les notifications
+4. Railway déploiera automatiquement le bot
+
+## Variables d'environnement requises
+
 ```bash
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+TELEGRAM_CHAT_ID=your_chat_id
+```
+
+## Installation locale (pour tests)
+
+```bash
+cd LegendaryBot
 bun install
-bun run vc-portfolio-scraper.ts
+bun run telegram_bot.js
 ```
-
-## 🤖 Utilisation avec bot Telegram
-
-Commandes disponibles :
-- `/source` - Lance le scraping VC
-- `/status` - Vérifie le statut du scraper
-- `/help` - Affiche l'aide
-
-## 📈 Automatisation GitHub Actions
-
-Le scraper s'exécute automatiquement :
-- **Tous les jours à 9h UTC (11h Paris)**
-- **Déclenchement manuel** possible via l'interface GitHub
-
-## 📁 Structure du projet
-
-```
-├── vc-portfolio-scraper.ts    # Script principal de scraping
-├── telegram_bot.js            # Bot Telegram
-├── package.json              # Dépendances
-├── vc_portfolio_data.txt     # Base de données des projets
-└── .github/workflows/        # Automatisation GitHub Actions
-```
-
-## 🔧 Technologies utilisées
-
-- **Runtime** : Bun
-- **Scraping** : Axios + Cheerio (statique) + Playwright (dynamique)
-- **Notifications** : Telegram Bot API
-- **Automatisation** : GitHub Actions
-
-## 📱 Notifications
-
-Recevez des notifications Telegram pour :
-- ✅ Nouveaux deals détectés
-- 📊 Résumé quotidien du scraping
-- ⚠️ Erreurs et alertes
-
----
-
-**Développé pour un sourcing efficace des deals VC** 🎯
