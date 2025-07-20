@@ -1,111 +1,78 @@
-# TopG Alpha Bot 🔥
+# 🚀 VC Portfolio Scraper
 
-Un bot Telegram qui génère des citations motivationnelles aléatoires de personnalités inspirantes.
+Scraper automatique des portfolios des fonds de Venture Capital avec notifications Telegram.
 
-## 🚀 Fonctionnalités
+## 📊 Fonctionnalités
 
-Le bot répond aux commandes suivantes :
+- **21 sites VC scrapés** automatiquement
+- **853+ projets** surveillés en continu
+- **Notifications Telegram** en temps réel
+- **GitHub Actions** pour automatisation (tous les jours à 11h Paris)
+- **Détection intelligente** des nouveaux deals
 
-- `/start` - Affiche le message de bienvenue et la liste des commandes
-- `/goggins` - Citations motivationnelles de David Goggins 💪
-- `/trump` - Sagesse business de Donald Trump 🇺🇸  
-- `/hormozi` - Insights business d'Alex Hormozi 💰
-- `/tate` - Mentalité alpha d'Andrew Tate 👑
-- `/musk` - Citations d'innovation d'Elon Musk 🚀
+## 🎯 Sites surveillés
 
-## 📋 Installation
+### Sites statiques :
+- Haun Ventures, HashKey Capital, Greenfield, Fabric VC
+- Dewhales, MH Ventures, Multicoin Capital, Wintermute
+- Alliance DAO, GM Capital, Shima Capital, etc.
 
-1. Assurez-vous d'avoir Python 3.7+ installé
-2. Installez les dépendances :
-   ```bash
-   pip3 install -r requirements.txt
-   ```
+### Sites dynamiques :
+- Framework Ventures, Delphi Digital, Pantera Capital
+- Paradigm, Sequoia Capital, a16z Crypto
+- 6thMan Ventures, Bankless Ventures, etc.
 
-## 🎯 Utilisation
+## ⚙️ Configuration
 
-### Lancer le bot
-```bash
-python3 telegram_bot.py
+### Variables d'environnement requises :
+```
+TELEGRAM_BOT_TOKEN=votre_token_bot
+TELEGRAM_CHAT_ID=votre_chat_id
 ```
 
-### Ou utiliser le script de démarrage
+### Installation locale :
 ```bash
-./start_bot.sh
+bun install
+bun run vc-portfolio-scraper.ts
 ```
 
-### Arrêter le bot
-Appuyez sur `Ctrl+C` dans le terminal
+## 🤖 Utilisation avec bot Telegram
 
-## 🤖 Bot Information
+Commandes disponibles :
+- `/source` - Lance le scraping VC
+- `/status` - Vérifie le statut du scraper
+- `/help` - Affiche l'aide
 
-- **Nom du bot :** @TopGAlphaBot
-- **Token :** 7836750010:AAE9iW2qLXLNxivMH3Yh_K2UbrxghW9cyBc
-- **Chat ID de test :** 662447606
+## 📈 Automatisation GitHub Actions
 
-## 🔧 Configuration
+Le scraper s'exécute automatiquement :
+- **Tous les jours à 9h UTC (11h Paris)**
+- **Déclenchement manuel** possible via l'interface GitHub
 
-Le bot est configuré pour :
-- ✅ Permettre à tout le monde d'utiliser les commandes (pas seulement l'admin)
-- ✅ Répondre avec des citations aléatoires à chaque utilisation
-- ✅ Gérer les erreurs de connexion automatiquement
-- ✅ Fonctionner en continu (polling)
+## 📁 Structure du projet
 
-## 📝 Structure du Code
+```
+├── vc-portfolio-scraper.ts    # Script principal de scraping
+├── telegram_bot.js            # Bot Telegram
+├── package.json              # Dépendances
+├── vc_portfolio_data.txt     # Base de données des projets
+└── .github/workflows/        # Automatisation GitHub Actions
+```
 
-- `telegram_bot.py` - Script principal du bot
-- `requirements.txt` - Dépendances Python
-- `start_bot.sh` - Script de démarrage
-- `README.md` - Cette documentation
+## 🔧 Technologies utilisées
 
-## 🎲 Citations Disponibles
+- **Runtime** : Bun
+- **Scraping** : Axios + Cheerio (statique) + Playwright (dynamique)
+- **Notifications** : Telegram Bot API
+- **Automatisation** : GitHub Actions
 
-- **David Goggins :** 25 citations motivationnelles sur la discipline et la persévérance
-- **Donald Trump :** 25 citations sur le business et le succès
-- **Alex Hormozi :** 25 insights sur l'entrepreneuriat et la productivité
-- **Andrew Tate :** 50 citations sur la mentalité alpha et le succès
-- **Elon Musk :** 25 citations sur l'innovation et la vision
+## 📱 Notifications
 
-## 💡 Exemple d'utilisation
-
-1. Ouvrez Telegram
-2. Recherchez `@TopGAlphaBot`
-3. Tapez `/start` pour commencer
-4. Utilisez `/goggins` pour une citation motivationnelle
-5. Le bot répondra avec une citation aléatoire !
-
-## 🚀 Déploiement sur Railway (24/7)
-
-Pour faire fonctionner le bot 24/7 même quand votre ordinateur est éteint :
-
-### 1. Créer un compte Railway
-1. Allez sur [railway.app](https://railway.app)
-2. Connectez-vous avec GitHub
-
-### 2. Déployer depuis GitHub
-1. Poussez ce code sur GitHub
-2. Sur Railway : **New Project** → **Deploy from GitHub repo**
-3. Sélectionnez ce repository
-
-### 3. Configurer les variables d'environnement
-Dans Railway, ajoutez :
-- `BOT_TOKEN` = `7836750010:AAE9iW2qLXLNxivMH3Yh_K2UbrxghW9cyBc`
-
-### 4. Le bot se déploie automatiquement ! 🎉
-
-## 🔧 Alternatives de déploiement
-
-- **Railway** (Recommandé) - Gratuit jusqu'à 500h/mois
-- **Heroku** - Plan gratuit disponible 
-- **Render** - Alternative gratuite
-- **VPS** (DigitalOcean, Linode) - Plus technique mais plus de contrôle
-
-## ⚡ Conseils
-
-- Le bot fonctionne 24/7 tant que le script est en cours d'exécution
-- Chaque commande retourne une citation différente aléatoirement
-- Le bot peut gérer plusieurs utilisateurs simultanément
-- Les logs s'affichent dans le terminal pour le débogage
+Recevez des notifications Telegram pour :
+- ✅ Nouveaux deals détectés
+- 📊 Résumé quotidien du scraping
+- ⚠️ Erreurs et alertes
 
 ---
 
-**Stay hard! 💪**
+**Développé pour un sourcing efficace des deals VC** 🎯
