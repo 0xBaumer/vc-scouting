@@ -18,5 +18,5 @@ COPY . .
 # Exposer le port (Railway l'assigne automatiquement)
 EXPOSE $PORT
 
-# Commande de démarrage Railway
-CMD ["bun", "run", "railway-start.js"]
+# Commande de démarrage Railway (Bot + Auto Scraper)
+CMD ["bun", "run", "railway-full.js"]
