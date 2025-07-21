@@ -7,7 +7,7 @@ console.log('🚀 Railway Full VC Service starting...');
 console.log('📦 Launching Telegram Bot + Auto Scraping');
 
 // Lancer le bot Telegram
-const telegramBot = spawn('bun', ['run', 'telegram-bot-railway.js'], {
+const telegramBot = spawn('bun', ['run', 'telegram_bot.js'], {
   stdio: 'inherit'
 });
 
@@ -20,7 +20,7 @@ telegramBot.on('close', (code) => {
   // Redémarrer le bot automatiquement
   setTimeout(() => {
     console.log('🔄 Restarting Telegram bot...');
-    spawn('bun', ['run', 'telegram-bot-railway.js'], { stdio: 'inherit' });
+    spawn('bun', ['run', 'telegram_bot.js'], { stdio: 'inherit' });
   }, 5000);
 });
 
@@ -28,7 +28,7 @@ telegramBot.on('close', (code) => {
 function runAutoScraper() {
   console.log(`\n📅 [${new Date().toLocaleString()}] Auto-scraping started...`);
   
-  const scraper = spawn('bun', ['run', 'vc-portfolio-scraper-railway.ts'], {
+  const scraper = spawn('bun', ['run', 'vc-portfolio-scraper.ts'], {
     stdio: 'inherit'
   });
   
@@ -38,7 +38,7 @@ function runAutoScraper() {
     } else {
       console.error(`❌ Auto-scraping failed with code ${code}`);
     }
-    console.log('⏱️ Next auto-scraping in 2 hours...\n');
+    console.log('⏱️ Next auto-scraping in 6 hours...\n');
   });
   
   scraper.on('error', (error) => {
@@ -52,12 +52,12 @@ setTimeout(() => {
   runAutoScraper();
 }, 30000);
 
-// Puis toutes les 2 heures
-setInterval(runAutoScraper, 2 * 60 * 60 * 1000);
+// Puis toutes les 6 heures
+setInterval(runAutoScraper, 6 * 60 * 60 * 1000);
 
 console.log('✅ Railway services initialized!');
 console.log('🤖 Telegram Bot: Running 24/7');
-console.log('⏰ Auto Scraper: Every 2 hours');
+console.log('⏰ Auto Scraper: Every 6 hours');
 console.log('📱 Both services active - Mac can be turned off!');
 
 // Garder le processus principal en vie
