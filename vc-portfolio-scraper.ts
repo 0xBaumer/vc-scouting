@@ -484,6 +484,12 @@ if (import.meta.main) {
 }
 
 async function sendTelegramNotification(message: string) {
+  // Skip Telegram notification for local testing
+  if (TELEGRAM_BOT_TOKEN === 'test_token_for_local_testing') {
+    console.log(`📤 [TEST MODE] Would send Telegram notification: ${message}`);
+    return;
+  }
+  
   const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
   try {
     await axios.post(url, {

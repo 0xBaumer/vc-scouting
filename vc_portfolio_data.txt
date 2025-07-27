@@ -21,8 +21,10 @@ Neynar
 OpenSea
 Plume
 Sovereign Labs
+Squads
 Taxbit
 Witness
+XFX
 Zora
 thirdweb
 
@@ -397,10 +399,10 @@ Find Satoshi Labs
 Force Prime
 Fountain
 Glow
+Gobankless
 Hyperplex
 Inco
 Ink Finance
-Jambo
 Junction
 Kravata
 Kyber
