@@ -5,6 +5,7 @@ import { join } from 'path';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { chromium } from 'playwright';
+import DatabaseStorage from './db-config.js';
 
 // Telegram configuration
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
@@ -314,8 +315,20 @@ async function handleDynamicLoading(page: any, url: string): Promise<void> {
   }
 }
 
-// Charger les données existantes
-function loadExistingData(): StoredData {
+// Charger les données existantes depuis PostgreSQL ou fichier de fallback
+async function loadExistingData(dbStorage: DatabaseStorage): Promise<StoredData> {
+  // Essayer d'abord PostgreSQL
+  try {
+    const dbData = await dbStorage.getAllVCData();
+    if (dbData && Object.keys(dbData).length > 0) {
+      console.log('📊 Data loaded from PostgreSQL database');
+      return dbData;
+    }
+  } catch (error) {
+    console.log('⚠️ Could not load from database, trying file fallback');
+  }
+  
+  // Fallback sur fichier local
   if (!existsSync(DATA_FILE)) {
     return {};
   }
@@ -339,6 +352,7 @@ function loadExistingData(): StoredData {
       }
     }
     
+    console.log('📊 Data loaded from local file');
     return data;
   } catch (error) {
     console.error('❌ Error loading existing data:', error);
@@ -346,26 +360,49 @@ function loadExistingData(): StoredData {
   }
 }
 
-// Sauvegarder les données
-function saveData(data: StoredData): void {
-  let content = '';
-  
-  for (const [url, projects] of Object.entries(data)) {
-    content += `${url}\n`;
-    for (const project of projects.sort()) {
-      content += `${project}\n`;
+// Sauvegarder les données dans PostgreSQL et fichier de backup
+async function saveData(data: StoredData, dbStorage: DatabaseStorage): Promise<void> {
+  // Sauvegarder d'abord dans PostgreSQL
+  let dbSaveSuccess = false;
+  if (dbStorage.isConnected) {
+    try {
+      for (const [url, projects] of Object.entries(data)) {
+        await dbStorage.saveVCProjects(url, projects);
+      }
+      console.log('✅ Data saved to PostgreSQL database');
+      dbSaveSuccess = true;
+    } catch (error) {
+      console.error('❌ Error saving to database:', error);
     }
-    content += '\n';
   }
   
-  writeFileSync(DATA_FILE, content, 'utf-8');
+  // Toujours sauvegarder dans le fichier comme backup
+  try {
+    let content = '';
+    for (const [url, projects] of Object.entries(data)) {
+      content += `${url}\n`;
+      for (const project of projects.sort()) {
+        content += `${project}\n`;
+      }
+      content += '\n';
+    }
+    writeFileSync(DATA_FILE, content, 'utf-8');
+    console.log(dbSaveSuccess ? '✅ Data also backed up to local file' : '✅ Data saved to local file only');
+  } catch (error) {
+    console.error('❌ Error saving to file:', error);
+  }
 }
 
 // Fonction principale
 async function main(): void {
   console.log('🚀 VC Portfolio Scraper started...\n');
   
-  const existingData = loadExistingData();
+  // Initialiser la base de données PostgreSQL
+  const dbStorage = new DatabaseStorage();
+  const dbConnected = await dbStorage.connect();
+  console.log(dbConnected ? '✅ PostgreSQL connected' : '⚠️ PostgreSQL not available, using file fallback');
+  
+  const existingData = await loadExistingData(dbStorage);
   const newData: StoredData = { ...existingData };
   const totalNewDeals: { project: string, source: string }[] = [];
   
@@ -421,9 +458,9 @@ async function main(): void {
   }
   
   // Sauvegarder les données
-  saveData(newData);
+  await saveData(newData, dbStorage);
   
-  console.log(`✅ Scraping completed. Data saved to ${DATA_FILE}`);
+  console.log(`✅ Scraping completed. Data saved ${dbConnected ? 'to PostgreSQL' : 'to file'}`);
   
   // Final statistics
   const totalSites = Object.keys(newData).length;
@@ -436,6 +473,9 @@ async function main(): void {
     : '📊 No new deals, go source on X!';
     
   await sendTelegramNotification(notificationMessage);
+  
+  // Fermer la connexion à la base de données
+  await dbStorage.close();
 }
 
 // Exécuter le script
